@@ -61,4 +61,5 @@ $('publish').onclick=()=>publish(true);$('draft').onclick=()=>publish(false);$('
 async function loadRecent(){if(!isAdmin(currentUser))return;$('recent').textContent='Loading…';const {data,error}=await db.from('news').select('title,category,published,created_at').order('created_at',{ascending:false}).limit(12);if(error){$('recent').textContent=error.message;return}$('recent').innerHTML=(data||[]).map(x=>'<div class="story"><h3>'+esc(x.title)+'</h3><div class="muted">'+esc(x.category||'News')+' · '+(x.published?'Published':'Draft')+' · '+new Date(x.created_at).toLocaleString()+'</div></div>').join('')||'No stories yet.'}
 boot();
 })();
-</script></body></html>
+</script><script src="assets/mbale-media-ai.js" defer></script>
+</body></html>
