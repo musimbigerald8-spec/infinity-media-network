@@ -6,7 +6,7 @@
 a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #071426;outline-offset:3px}</style></head><body>
 <header><strong>INFINITY <span>MEDIA NETWORK</span> · STUDIO</strong><span class="muted">PRIVATE PUBLISHING DESK</span></header>
 <main class="wrap">
-<section id="login" class="card login"><div class="tag">Administrator access</div><h1>Welcome to IMN Studio</h1><p class="muted">Sign in with your authorized administrator account to write and publish stories, photos and video.</p><div class="field"><label>Email address</label><input id="email" type="email" autocomplete="username"></div><div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password"></div><button id="signIn" class="btn" style="width:100%">Sign in securely</button><div id="loginStatus" class="status"></div></section>
+<section id="login" class="card login"><div class="tag">Administrator access</div><h1>Welcome to IMN Studio</h1><p class="muted">Sign in with your authorized administrator account to write and publish stories, photos and video.</p><div class="field"><label>Email address</label><input id="email" type="email" autocomplete="username" value="musimbigerald8@gmail.com"></div><div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password"></div><button id="signIn" class="btn" style="width:100%">Sign in securely</button><div id="loginStatus" class="status"></div></section>
 <section id="app" class="hidden">
 <div class="card"><div class="row"><div><div class="tag">IMN Newsroom</div><h1 style="margin:7px 0">Create a story</h1><p class="muted">Write the report, attach photographs and add a video. Your story is saved to the newsroom.</p></div><button id="logout" class="btn secondary">Sign out</button></div></div>
 <div class="card">
@@ -29,15 +29,16 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #0714
 const DB_URL='https://dwbgcaxwemrwheybdpya.supabase.co';
 const DB_KEY='sb_publishable_WkkWUJF8ONyX4oS2nvGNFw_jdAob8M8';
 const ADMIN_UID='81148dcd-10b8-4f85-a2b0-635fc7c250cf';
-const db=window.supabase.createClient(DB_URL,DB_KEY);
 const $=id=>document.getElementById(id);
+if(!window.supabase){$('loginStatus').textContent='The secure login library could not load. Please connect your phone to the internet, refresh this page and try again.';$('loginStatus').className='status err';$('signIn').disabled=true;return;}
+const db=window.supabase.createClient(DB_URL,DB_KEY);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let currentUser=null,busy=false;
 function status(id,text,good){$(id).textContent=text;$(id).className='status '+(good?'ok':'err')}
 function isAdmin(u){return !!u&&u.id===ADMIN_UID}
 function showApp(u){if(!isAdmin(u)){db.auth.signOut();status('loginStatus','This account is not authorized for the IMN administrator newsroom.',false);return}currentUser=u;$('login').classList.add('hidden');$('app').classList.remove('hidden');loadRecent()}
 async function boot(){try{const {data,error}=await db.auth.getSession();if(error)throw error;if(data.session)showApp(data.session.user)}catch(e){status('loginStatus',e.message,false)}}
-$('signIn').onclick=async()=>{if(busy)return;busy=true;$('signIn').disabled=true;status('loginStatus','Checking secure administrator access…',true);try{const {data,error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error)throw error;if(!isAdmin(data.user)){await db.auth.signOut();throw new Error('This account is not authorized to access IMN Studio.')}showApp(data.user)}catch(e){status('loginStatus',e.message||'Sign-in failed.',false)}finally{busy=false;$('signIn').disabled=false}};
+$('signIn').onclick=async()=>{if(busy)return;busy=true;$('signIn').disabled=true;status('loginStatus','Checking secure administrator access…',true);try{const {data,error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error)throw error;if(!isAdmin(data.user)){await db.auth.signOut();throw new Error('This account is not authorized to access IMN Studio.')}showApp(data.user)}catch(e){status('loginStatus',(e&&(/Failed to fetch|fetch failed|NetworkError/i.test(e.message||'')))?'Cannot reach the secure login server. Check that mobile data or Wi-Fi is ON, then refresh and try again.':(e.message||'Sign-in failed.'),false)}finally{busy=false;$('signIn').disabled=false}};
 $('password').addEventListener('keydown',e=>{if(e.key==='Enter')$('signIn').click()});
 $('logout').onclick=async()=>{await db.auth.signOut();currentUser=null;$('app').classList.add('hidden');$('login').classList.remove('hidden');$('password').value=''};
 db.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){currentUser=null;$('app').classList.add('hidden');$('login').classList.remove('hidden')}});
