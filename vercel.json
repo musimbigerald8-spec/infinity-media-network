@@ -1,12 +1,40 @@
 {
   "rewrites": [
-    { "source": "/admin.html", "destination": "/admin-hq.html" },
-    { "source": "/admin", "destination": "/admin-hq.html" },
-    { "source": "/newsroom-admin", "destination": "/newsroom-admin.html" },
-    { "source": "/newsroom", "destination": "/newsroom-admin.html" },
-    { "source": "/careers", "destination": "/careers.html" },
-    { "source": "/editors", "destination": "/editor.html" },
-    { "source": "/careers-admin", "destination": "/careers-admin.html" },
-    { "source": "/latest-news", "destination": "/latest-news.html" }
+    {
+      "source": "/studio",
+      "destination": "/imn-studio.html"
+    },
+    {
+      "source": "/admin.html",
+      "destination": "/admin-hq.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin-hq.html"
+    },
+    {
+      "source": "/newsroom-admin",
+      "destination": "/newsroom-admin.html"
+    },
+    {
+      "source": "/newsroom",
+      "destination": "/newsroom-admin.html"
+    },
+    {
+      "source": "/careers",
+      "destination": "/careers.html"
+    },
+    {
+      "source": "/editors",
+      "destination": "/editor.html"
+    },
+    {
+      "source": "/careers-admin",
+      "destination": "/careers-admin.html"
+    },
+    {
+      "source": "/latest-news",
+      "destination": "/latest-news.html"
+    }
   ]
 }
